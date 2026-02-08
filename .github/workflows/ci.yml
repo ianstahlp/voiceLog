@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./server
-        run: npm ci
+        run: npm install --include=optional
 
       - name: Run tests
         working-directory: ./server
@@ -85,7 +85,7 @@ jobs:
 
       - name: Install server dependencies
         working-directory: ./server
-        run: npm ci
+        run: npm install --include=optional
 
       - name: Run server tests with coverage
         working-directory: ./server
