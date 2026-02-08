@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { estimateExerciseCalories } from '../shared/calorieEstimation';
-import type { LogEntry, FoodItem, ExerciseActivity } from '../shared/types';
+import type { LogEntry, FoodItem, ExerciseActivity, UpdateLogEntryRequest } from '../shared/types';
 
 interface EditModalProps {
   entry: LogEntry;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (id: number, updates: any) => void;
+  onSave: (id: number, updates: UpdateLogEntryRequest) => void;
 }
 
 export function EditModal({ entry, isOpen, onClose, onSave }: EditModalProps) {
@@ -20,13 +20,13 @@ export function EditModal({ entry, isOpen, onClose, onSave }: EditModalProps) {
     onClose();
   };
 
-  const updateFoodItem = (index: number, field: keyof FoodItem, value: any) => {
+  const updateFoodItem = (index: number, field: keyof FoodItem, value: string | number | null) => {
     const newItems = [...items] as FoodItem[];
     newItems[index] = { ...newItems[index], [field]: value };
     setItems(newItems);
   };
 
-  const updateExerciseItem = (index: number, field: keyof ExerciseActivity, value: any) => {
+  const updateExerciseItem = (index: number, field: keyof ExerciseActivity, value: string | number | null) => {
     const newItems = [...items] as ExerciseActivity[];
     const updatedItem = { ...newItems[index], [field]: value };
 

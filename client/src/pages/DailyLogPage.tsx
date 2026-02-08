@@ -7,7 +7,7 @@ import { DailySummary } from '../components/DailySummary';
 import { LogEntry } from '../components/LogEntry';
 import { EditModal } from '../components/EditModal';
 import { useLogEntries, useUpdateLogEntry, useDeleteLogEntry } from '../hooks/useLogEntries';
-import type { LogEntry as LogEntryType } from '../shared/types';
+import type { LogEntry as LogEntryType, UpdateLogEntryRequest } from '../shared/types';
 
 export function DailyLogPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -33,7 +33,7 @@ export function DailyLogPage() {
     setSelectedEntry(entry);
   };
 
-  const handleSave = async (id: number, updates: any) => {
+  const handleSave = async (id: number, updates: UpdateLogEntryRequest) => {
     try {
       await updateEntry.mutateAsync({ id, updates });
       toast.success('Entry updated successfully!');
