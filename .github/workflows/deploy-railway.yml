@@ -1,0 +1,44 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'shared/**'
+      - '.github/workflows/deploy-railway.yml'
+  workflow_dispatch: # Allow manual deployment
+
+jobs:
+  deploy:
+    name: Deploy Server to Railway
+    runs-on: ubuntu-latest
+    # Only run deployment if tests pass
+    needs: []
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          cd server
+          railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
+
+      - name: Deployment notification
+        if: success()
+        run: echo "✅ Server deployed to Railway successfully!"
+
+      - name: Deployment failure notification
+        if: failure()
+        run: echo "❌ Server deployment to Railway failed!"
