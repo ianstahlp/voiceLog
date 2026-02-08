@@ -75,7 +75,7 @@ export function HomePage() {
     }
   };
 
-  const recentEntries = summary?.entries.slice(0, 5) || [];
+  const recentEntries = summary?.entries?.slice(0, 5) || [];
 
   return (
     <div className="home-page">
