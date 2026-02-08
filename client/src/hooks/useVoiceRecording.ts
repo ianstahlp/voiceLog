@@ -11,17 +11,19 @@ declare global {
 export function useVoiceRecording() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const [isSupported, setIsSupported] = useState(true);
+  // Check support on mount - don't use setState in effect
+  const [isSupported] = useState(() => {
+    return !!(typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition));
+  });
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    // Check if Speech Recognition is supported
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      setIsSupported(false);
+    // Skip initialization if not supported
+    if (!isSupported) {
       return;
     }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     // Initialize Speech Recognition
     const recognition = new SpeechRecognition();
@@ -54,9 +56,6 @@ export function useVoiceRecording() {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error:', event.error);
-      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-        setIsSupported(false);
-      }
       setIsListening(false);
     };
 
