@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import { estimateExerciseCalories } from '../../../shared/calorieEstimation';
-import type { LogEntry, FoodItem, ExerciseActivity } from '../../../shared/types';
+import { estimateExerciseCalories } from '../shared/calorieEstimation';
+import type { LogEntry, FoodItem, ExerciseActivity } from '../shared/types';
 
 interface EditModalProps {
   entry: LogEntry;

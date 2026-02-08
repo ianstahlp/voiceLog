@@ -1,4 +1,4 @@
-import type { DailySummary as DailySummaryType } from '../../../shared/types';
+import type { DailySummary as DailySummaryType } from '../shared/types';
 
 interface DailySummaryProps {
   summary: DailySummaryType;

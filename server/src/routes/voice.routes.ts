@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { processVoiceTranscript } from '../services/ai.service.js';
 import { createFoodLog, createOrMergeExerciseLog } from '../services/logs.service.js';
-import type { ProcessVoiceRequest, LogEntry } from '../../../shared/types.js';
+import type { ProcessVoiceRequest, LogEntry } from '../shared/types.js';
 
 const router = Router();
 

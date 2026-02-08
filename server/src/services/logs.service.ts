@@ -6,7 +6,7 @@ import type {
   DailySummary,
   LogFoodIntakeArgs,
   LogExerciseArgs,
-} from '../../../shared/types.js';
+} from '../shared/types.js';
 
 /**
  * Create a new food log entry
@@ -303,43 +303,44 @@ export function updateLogEntry(
 
     if (entry.type === 'food') {
       updates.forEach((update) => {
-        if (update.id) {
+        const foodUpdate = update as Partial<FoodItem>;
+        if (foodUpdate.id) {
           const fields = [];
           const values = [];
 
-          if (update.name !== undefined) {
+          if (foodUpdate.name !== undefined) {
             fields.push('name = ?');
-            values.push(update.name);
+            values.push(foodUpdate.name);
           }
-          if (update.quantity !== undefined) {
+          if (foodUpdate.quantity !== undefined) {
             fields.push('quantity = ?');
-            values.push(update.quantity);
+            values.push(foodUpdate.quantity);
           }
-          if (update.unit !== undefined) {
+          if (foodUpdate.unit !== undefined) {
             fields.push('unit = ?');
-            values.push(update.unit);
+            values.push(foodUpdate.unit);
           }
-          if (update.calories !== undefined) {
+          if (foodUpdate.calories !== undefined) {
             fields.push('calories = ?');
-            values.push(update.calories);
+            values.push(foodUpdate.calories);
           }
-          if (update.protein !== undefined) {
+          if (foodUpdate.protein !== undefined) {
             fields.push('protein = ?');
-            values.push(update.protein);
+            values.push(foodUpdate.protein);
           }
-          if (update.carbs !== undefined) {
+          if (foodUpdate.carbs !== undefined) {
             fields.push('carbs = ?');
-            values.push(update.carbs);
+            values.push(foodUpdate.carbs);
           }
-          if (update.fat !== undefined) {
+          if (foodUpdate.fat !== undefined) {
             fields.push('fat = ?');
-            values.push(update.fat);
+            values.push(foodUpdate.fat);
           }
 
           if (fields.length > 0) {
             db.prepare(`UPDATE food_items SET ${fields.join(', ')} WHERE id = ?`).run(
               ...values,
-              update.id
+              foodUpdate.id
             );
           }
         }

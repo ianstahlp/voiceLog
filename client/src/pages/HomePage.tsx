@@ -7,7 +7,7 @@ import { LogEntry } from '../components/LogEntry';
 import { EditModal } from '../components/EditModal';
 import { useProcessVoice, useLogEntries, useUpdateLogEntry, useDeleteLogEntry } from '../hooks/useLogEntries';
 import { useSettingsStore } from '../store/settingsStore';
-import type { LogEntry as LogEntryType } from '../../../shared/types';
+import type { LogEntry as LogEntryType } from '../shared/types';
 
 export function HomePage() {
   const [selectedEntry, setSelectedEntry] = useState<LogEntryType | null>(null);
@@ -25,11 +25,21 @@ export function HomePage() {
         transcript,
         mergeExercises
       });
-      const count = entries.length;
-      if (count === 1) {
-        toast.success('Entry logged successfully!');
+
+      // Create a friendly success message with emojis
+      if (entries.length === 1) {
+        const entry = entries[0];
+        const emoji = entry.type === 'food' ? '🍽️' : '💪';
+        const mealType = entry.type === 'food' && entry.meal_type
+          ? ` ${entry.meal_type}`
+          : '';
+        toast.success(`${emoji} Logged${mealType}!`, {
+          duration: 3000,
+        });
       } else {
-        toast.success(`${count} entries logged successfully!`);
+        toast.success(`✅ ${entries.length} entries logged!`, {
+          duration: 3000,
+        });
       }
     } catch (error) {
       toast.error('Failed to process voice input. Please try again.');
@@ -79,8 +89,11 @@ export function HomePage() {
           <div>
             <h2>Speak to Log</h2>
             <p className="hint">
-              Tell me what you ate or what exercise you did. For example:<br />
-              "I had two scrambled eggs and a banana" or "I ran for 30 minutes"
+              Tap the mic and say what you ate or your workout<br />
+              <span className="hint-examples">
+                <span className="hint-example">🥚 "Two scrambled eggs and toast"</span>
+                <span className="hint-example">🏃 "Ran for 30 minutes"</span>
+              </span>
             </p>
           </div>
           <div className="settings-toggle">
@@ -114,7 +127,12 @@ export function HomePage() {
           <div className="loading">Loading...</div>
         ) : recentEntries.length === 0 ? (
           <div className="empty-state">
-            <p>No entries yet. Start by speaking into the microphone!</p>
+            <div className="empty-state-icon">🎤</div>
+            <p className="empty-state-title">Your log is empty</p>
+            <p className="empty-state-hint">
+              Tap the mic above and say something like<br />
+              "I had oatmeal and coffee for breakfast"
+            </p>
           </div>
         ) : (
           <div className="entries-list">

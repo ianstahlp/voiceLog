@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { estimateExerciseCalories, calculateCalorieDifference } from '../shared/calorieEstimation.js';
+import { estimateExerciseCalories, calculateCalorieDifference } from './calorieEstimation';
 
 describe('estimateExerciseCalories', () => {
   describe('duration-based calculations', () => {

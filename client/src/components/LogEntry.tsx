@@ -1,6 +1,6 @@
 import { Edit2, Trash2 } from 'lucide-react';
-import { format } from 'date-fns';
-import type { LogEntry as LogEntryType, FoodItem, ExerciseActivity } from '../../../shared/types';
+import { format, formatDistanceToNow } from 'date-fns';
+import type { LogEntry as LogEntryType, FoodItem, ExerciseActivity } from '../shared/types';
 
 interface LogEntryProps {
   entry: LogEntryType;
@@ -13,6 +13,10 @@ export function LogEntry({ entry, onEdit, onDelete }: LogEntryProps) {
     return format(new Date(timestamp), 'h:mm a');
   };
 
+  const formatRelativeTime = (timestamp: string) => {
+    return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
+  };
+
   const renderFoodItems = (items: FoodItem[]) => {
     const totalCalories = items.reduce((sum, item) => sum + item.calories, 0);
     const mealType = entry.meal_type;
@@ -20,20 +24,27 @@ export function LogEntry({ entry, onEdit, onDelete }: LogEntryProps) {
     return (
       <div className="log-entry-content">
         <div className="entry-header">
-          {mealType && <div className="meal-type">{mealType}</div>}
-          <div className="entry-time">{formatTime(entry.timestamp)}</div>
+          {mealType && <div className="meal-type">🍽️ {mealType}</div>}
+          <div className="entry-time">
+            <span className="time-absolute">{formatTime(entry.timestamp)}</span>
+            <span className="time-relative">{formatRelativeTime(entry.timestamp)}</span>
+          </div>
         </div>
-        <div className="entry-items-horizontal">
-          {items.map((item, index) => (
-            <span key={item.id} className="food-item-inline">
-              {index > 0 && <span className="item-separator">•</span>}
-              <span className="item-name">
-                {item.quantity && item.unit
-                  ? `${item.quantity} ${item.unit} ${item.name}`
-                  : item.name}
-              </span>
-              <span className="item-calories">({item.calories} cal)</span>
-            </span>
+        <div className="food-items-grid">
+          {items.map((item) => (
+            <div key={item.id} className="food-item-card">
+              <div className="food-card-name">
+                {item.quantity && item.unit ? (
+                  <>
+                    <span className="food-quantity">{item.quantity} {item.unit}</span>
+                    <span className="food-name-text">{item.name}</span>
+                  </>
+                ) : (
+                  <span className="food-name-text">{item.name}</span>
+                )}
+              </div>
+              <div className="food-card-calories">{item.calories} cal</div>
+            </div>
           ))}
         </div>
         <div className="entry-total">Total: {totalCalories} calories</div>
@@ -46,8 +57,11 @@ export function LogEntry({ entry, onEdit, onDelete }: LogEntryProps) {
 
     return (
       <div className="log-entry-content">
-        <div className="entry-type exercise">Exercise</div>
-        <div className="entry-time">{formatTime(entry.timestamp)}</div>
+        <div className="entry-type exercise">💪 Exercise</div>
+        <div className="entry-time">
+          <span className="time-absolute">{formatTime(entry.timestamp)}</span>
+          <span className="time-relative">{formatRelativeTime(entry.timestamp)}</span>
+        </div>
         <div className="entry-items">
           {items.map((item) => (
             <div key={item.id} className="exercise-item">

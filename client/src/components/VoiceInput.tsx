@@ -48,9 +48,9 @@ export function VoiceInput({ onTranscriptReady, isProcessing }: VoiceInputProps)
         aria-label={isListening ? 'Stop recording' : 'Start recording'}
       >
         {isListening ? (
-          <MicOff size={48} />
+          <MicOff size={44} />
         ) : (
-          <Mic size={48} />
+          <Mic size={44} />
         )}
       </button>
 

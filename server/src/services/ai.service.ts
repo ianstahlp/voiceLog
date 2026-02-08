@@ -1,5 +1,5 @@
 import { openai } from '../config/openai.js';
-import type { LogFoodIntakeArgs, LogExerciseArgs } from '../../../shared/types.js';
+import type { LogFoodIntakeArgs, LogExerciseArgs } from '../shared/types.js';
 
 // OpenAI tool definitions for structured data extraction
 const tools = [
@@ -7,7 +7,7 @@ const tools = [
     type: 'function' as const,
     function: {
       name: 'log_food_intake',
-      description: 'Log food items consumed by the user with calorie estimates and nutritional information',
+      description: 'Log ALL food and drink items consumed in a SINGLE meal or eating session. Do NOT split food from one meal into multiple function calls. This is ONLY for food/drinks, never for physical activities or exercise.',
       parameters: {
         type: 'object' as const,
         properties: {
@@ -66,7 +66,7 @@ const tools = [
     type: 'function' as const,
     function: {
       name: 'log_exercise',
-      description: 'Log exercise activities performed by the user with calorie burn estimates',
+      description: 'Log physical exercise and workout activities ONLY (running, walking, yoga, swimming, lifting, etc.). This is NEVER for food or eating. Only use this for physical activities that burn calories.',
       parameters: {
         type: 'object' as const,
         properties: {
@@ -113,25 +113,33 @@ const tools = [
 
 const systemPrompt = `You are a nutrition and fitness tracking assistant. When users describe their meals or workouts:
 
-1. Extract all food items or exercise activities mentioned
-2. If the user mentions BOTH food and exercise, call BOTH functions (log_food_intake AND log_exercise)
-3. Detect meal type from keywords or time-of-day mentions:
-   - "breakfast", "morning", "good morning" → breakfast
-   - "lunch", "afternoon", "good afternoon" → lunch
-   - "dinner", "evening", "good evening", "tonight" → dinner
-   - "snack" or ambiguous → snack
-4. Estimate reasonable portion sizes if not specified (e.g., if they say "an apple", assume 1 medium apple)
-5. Provide calorie estimates based on standard nutritional data for average portions
-6. For exercise, estimate calories burned for an average 70kg (154lb) adult
-7. Be conservative with estimates - it's better to slightly underestimate than overestimate
-8. Include macros (protein, carbs, fat) when possible for food items
-9. For exercise intensity: light = walking/gentle yoga, moderate = jogging/regular workout, intense = running/HIIT
+CRITICAL RULES:
+1. ALWAYS group ALL food items from a SINGLE meal or eating session into ONE log_food_intake call
+2. NEVER split a single meal into multiple log_food_intake calls - put all items in the items array
+3. ONLY use log_exercise for physical activities (running, walking, yoga, sports, lifting, etc.) - NEVER for food
+4. ONLY use log_food_intake for food and drinks - NEVER for physical activities
+5. If the user mentions BOTH food and exercise in separate contexts, call BOTH functions (once each)
+
+Food Logging Guidelines:
+- Detect meal type from keywords or time-of-day mentions:
+  - "breakfast", "morning", "good morning" → breakfast
+  - "lunch", "afternoon", "good afternoon" → lunch
+  - "dinner", "evening", "good evening", "tonight" → dinner
+  - "snack" or ambiguous → snack
+- Estimate reasonable portion sizes if not specified (e.g., "an apple" = 1 medium apple)
+- Provide calorie estimates based on standard nutritional data
+- Include macros (protein, carbs, fat) when possible
+- Be conservative with estimates - slightly underestimate rather than overestimate
+
+Exercise Logging Guidelines:
+- Estimate calories burned for an average 70kg (154lb) adult
+- Intensity levels: light = walking/gentle yoga, moderate = jogging/regular workout, intense = running/HIIT
 
 Examples:
-- "Good morning, I had eggs and toast for breakfast" → call log_food_intake with meal_type="breakfast"
-- "I ate two scrambled eggs and a banana" → call log_food_intake with meal_type="snack" (no context)
-- "I ran for 30 minutes" → call log_exercise
-- "I had a chicken salad for lunch and went for a 20 minute walk" → call BOTH with meal_type="lunch" for food
+- "I had ground chicken with spinach and brown rice for lunch" → ONE log_food_intake call with meal_type="lunch" containing ALL three items
+- "I ate two scrambled eggs and a banana" → ONE log_food_intake call with both items
+- "I ran for 30 minutes" → ONE log_exercise call (this is exercise, NOT food)
+- "I had a chicken salad for lunch and then went for a 20 minute walk" → TWO calls: log_food_intake (for the salad) AND log_exercise (for the walk)
 
 Always be helpful and provide reasonable estimates even if the user's description is vague.`;
 

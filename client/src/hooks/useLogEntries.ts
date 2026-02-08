@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import * as api from '../services/api';
-import type { UpdateLogEntryRequest } from '../../../shared/types';
+import type { UpdateLogEntryRequest } from '../shared/types';
 
 /**
  * Hook to fetch log entries for a specific date

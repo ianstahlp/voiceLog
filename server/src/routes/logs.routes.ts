@@ -5,7 +5,7 @@ import {
   updateLogEntry,
   deleteLogEntry,
 } from '../services/logs.service.js';
-import type { UpdateLogEntryRequest } from '../../../shared/types.js';
+import type { UpdateLogEntryRequest } from '../shared/types.js';
 
 const router = Router();
 
@@ -45,7 +45,7 @@ router.get('/', (req: Request, res: Response): void => {
  */
 router.get('/:id', (req: Request, res: Response): void => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(String(req.params.id), 10);
 
     if (isNaN(id)) {
       res.status(400).json({ error: 'Invalid log ID' });
@@ -74,7 +74,7 @@ router.get('/:id', (req: Request, res: Response): void => {
  */
 router.put('/:id', (req: Request, res: Response): void => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(String(req.params.id), 10);
 
     if (isNaN(id)) {
       res.status(400).json({ error: 'Invalid log ID' });
@@ -110,7 +110,7 @@ router.put('/:id', (req: Request, res: Response): void => {
  */
 router.delete('/:id', (req: Request, res: Response): void => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(String(req.params.id), 10);
 
     if (isNaN(id)) {
       res.status(400).json({ error: 'Invalid log ID' });

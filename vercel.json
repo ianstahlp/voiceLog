@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd client && cp -r ../shared ./src/ && npm run build",
+  "outputDirectory": "client/dist",
+  "devCommand": "cd client && npm run dev",
+  "installCommand": "cd client && npm install",
+  "framework": "vite"
+}
