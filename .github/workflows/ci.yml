@@ -19,12 +19,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: server/package-lock.json
 
-      - name: Install dependencies
+      - name: Clean and install dependencies
         working-directory: ./server
-        run: npm install --include=optional
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Run tests
         working-directory: ./server
@@ -83,9 +83,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install server dependencies
+      - name: Clean and install server dependencies
         working-directory: ./server
-        run: npm install --include=optional
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Run server tests with coverage
         working-directory: ./server
